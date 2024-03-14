@@ -15,6 +15,10 @@ public class FileReader {
         }
         return monthReports;
     }
+
+    public String readYearReports(){
+        return readFile("y.2021.csv");
+    }
     private String readFile(String path)
     {
         try {
