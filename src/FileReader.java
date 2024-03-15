@@ -10,8 +10,8 @@ public class FileReader {
 
 
     public String[] readAllMonthReports(){
-        for (int i = 0; i <= 11; i++){
-            monthReports[i] = readFile("m.20210" + (i + 1) + ".csv"); //Читаем файл и пишем его содержимое в массив
+        for (int i = 0; i <= 2; i++){
+            monthReports[i] = readFile("m.20210"+ (i + 1) + ".csv"); //Читаем файл и пишем его содержимое в массив
         }
         return monthReports;
     }

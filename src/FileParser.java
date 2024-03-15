@@ -1,5 +1,6 @@
 import java.util.ArrayList;
-
+import java.util.Arrays;
+import java.util.HashMap;
 
 
 //Здесь разбивка файла
@@ -9,7 +10,15 @@ public class FileParser {
 
     public void parseMonth() {
         MonthlyReport month = new MonthlyReport();
-
+        String[] monthReport = reader.readAllMonthReports();
+        HashMap<Integer, ArrayList<String>> item_name = month.item_name;
+        HashMap<Integer, ArrayList<Boolean>> is_expense = month.is_expense;
+        HashMap<Integer, ArrayList<Integer>> quantity = month.quantity;
+        HashMap<Integer, ArrayList<Double>> sum_of_one = month.sum_of_one;
+        for (int i = 1; i <= 3; i++){
+            String[] lines = monthReport[i].split("\\n");
+            System.out.println(lines[0]);
+        }
 
     }
 
