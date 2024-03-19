@@ -6,7 +6,6 @@ import java.nio.file.Path;
 
 public class FileReader {
     String[] monthReports = new String[12];
-    String yearReports;
 
 
     public String[] readAllMonthReports() {

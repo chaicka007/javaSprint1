@@ -23,7 +23,7 @@ public class MenuExecutor {
                 manager.infoYear();
             } else if (command == 0) {
                 System.out.println("До свидания");
-                break;
+                System.exit(0);
             } else {
                 System.out.println("Введите правильный номер!");
             }
