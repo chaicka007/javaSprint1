@@ -19,63 +19,70 @@ public class DataManager {
         this.monthCount = monthCount;
     }
 
-    public int getYearName() {
-        return yearName;
-    }
-
     public void setYearName(int yearName) {
         this.yearName = yearName;
     }
 
     public void parseMonth() {
 
-        String[] monthReport = reader.readAllMonthReports(monthCount);
-        year.setYear(yearName);
+        try {
+            String[] monthReport = reader.readAllMonthReports(monthCount);
+            for (int i = 1; i <= getMonthCount(); i++) {
+                String[] lines = monthReport[i - 1].split("\\n");
+                ArrayList<String> item_name = new ArrayList<>();
+                ArrayList<Boolean> is_expense = new ArrayList<>();
+                ArrayList<Integer> quantity = new ArrayList<>();
+                ArrayList<Double> sum_of_one = new ArrayList<>();
 
-        for (int i = 1; i <= 3; i++) {
-            String[] lines = monthReport[i - 1].split("\\n");
-            ArrayList<String> item_name = new ArrayList<>();
-            ArrayList<Boolean> is_expense = new ArrayList<>();
-            ArrayList<Integer> quantity = new ArrayList<>();
-            ArrayList<Double> sum_of_one = new ArrayList<>();
-
-            for (int j = 1; j < lines.length; j++) {
-                String[] lineContents = lines[j].split(",");
-                item_name.add(lineContents[0]);
-                is_expense.add(Boolean.valueOf(lineContents[1]));
-                quantity.add(Integer.valueOf(lineContents[2]));
-                sum_of_one.add(Double.valueOf(lineContents[3]));
+                for (int j = 1; j < lines.length; j++) {
+                    String[] lineContents = lines[j].split(",");
+                    item_name.add(lineContents[0]);
+                    is_expense.add(Boolean.valueOf(lineContents[1]));
+                    quantity.add(Integer.valueOf(lineContents[2]));
+                    sum_of_one.add(Double.valueOf(lineContents[3]));
+                }
+                month.putItemName(i, item_name);
+                month.putIsExpense(i, is_expense);
+                month.putQuantity(i, quantity);
+                month.putSumOfOne(i, sum_of_one);
             }
-            month.putItemName(i, item_name);
-            month.putIsExpense(i, is_expense);
-            month.putQuantity(i, quantity);
-            month.putSumOfOne(i, sum_of_one);
+            month.setRead(true); // переменная, что отчет прочитан
+            System.out.println("Успешное чтение месячных отчетов");
+        } catch (NullPointerException e) {
+            System.out.println("Сбой чтения месячных отчетов");
+            month.setRead(false);
         }
-        month.setRead(true); // переменная, что отчет прочитан
-        System.out.println("Успешное чтение месячных отчетов");
     }
 
     public void parseYear() {
 
-        String[] lines = reader.readYearReports().split("\\n");
-        for (int i = 1; i <= 3 * 2; i++) {
-            String[] lineContents = lines[i].split(",");
-            year.addMonth(Integer.valueOf(lineContents[0]));
-            year.addAmount(Double.valueOf(lineContents[1]));
-            year.addIsExpense(Boolean.valueOf(lineContents[2].trim())); //trim() чтобы убрать пробел, если его оставить, то всегда false
+        try {
+            year.setYear(yearName);
+            String[] lines = reader.readYearReports(year.getYear()).split("\\n");
+            for (int i = 1; i <= monthCount * 2; i++) {
+                String[] lineContents = lines[i].split(",");
+                year.addMonth(Integer.valueOf(lineContents[0]));
+                year.addAmount(Double.valueOf(lineContents[1]));
+                year.addIsExpense(Boolean.valueOf(lineContents[2].trim())); //trim() чтобы убрать пробел, если его оставить, то всегда false
+            }
+            year.setRead(true);
+            System.out.println("Успешное чтение годового отчета");
 
+        } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
+            System.out.println("Сбой при чтении годового отчета");
+            year.setRead(false);
         }
-        year.setRead(true);
-        System.out.println("Успешное чтение годового отчета");
+
+
     }
 
     public void infoMonthly() {
         if (!month.isRead()) {
-            System.out.println("Месячные отчеты еще не прочитаны!"); //Проврка на чтение отчетов
+            System.out.println("Месячные отчеты еще не прочитаны!"); //Проверка на чтение отчетов
             return;
         }
         System.out.print("Информация о месячных отчетах\n");
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= monthCount; i++) {
             System.out.println(monthName[i - 1] + ":");
             ArrayList<Boolean> is_expenses = month.getIsExpense().get(i);
             ArrayList<String> item_name = month.getItemName().get(i);
@@ -123,8 +130,8 @@ public class DataManager {
                 allMonthExpense += year.getAmount().get(i);
             }
         }
-        double averageRevenue = allMonthRevenue / (year.getMonth().size() / 2);
-        double averageExpense = allMonthExpense / (year.getMonth().size() / 2);
+        double averageRevenue = allMonthRevenue / (year.getMonth().size() / 2d);
+        double averageExpense = allMonthExpense / (year.getMonth().size() / 2d);
         ArrayList<Double> monthRevenue = new ArrayList<>();
         for (int i = 0; i < year.getMonth().size(); i += 2) {
             if (!year.getIsExpense().get(i)) {
@@ -154,7 +161,7 @@ public class DataManager {
             return;
         }
         System.out.println("Сверка отчетов:");
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= monthCount; i++) {
             ArrayList<Boolean> is_expenses = month.getIsExpense().get(i);
             ArrayList<Integer> quantity = month.getQuantity().get(i);
             ArrayList<Double> sum_of_one = month.getSumOfOne().get(i);
@@ -172,13 +179,13 @@ public class DataManager {
 
             int yearIterator = (i - 1) * 2;
             if (!year.getIsExpense().get(yearIterator)) {
-                if (monthRevenue == year.getAmount().get(yearIterator) && monthExpenses == year.getAmount().get(yearIterator + 1)) { //сверка отяетов, если доход 1
-                    continue;
-                } else System.out.println("Ошибка в отчете за " + monthName[i - 1]);
+                if (monthRevenue != year.getAmount().get(yearIterator) && monthExpenses != year.getAmount().get(yearIterator + 1)) { //сверка отяетов, если доход 1
+                    System.out.println("Ошибка в отчете за " + monthName[i - 1]);
+                }
             } else {
-                if (monthExpenses == year.getAmount().get(yearIterator) && monthRevenue == year.getAmount().get(yearIterator + 1)) { //сверка, если расход 1
-                    continue;
-                } else System.out.println("Ошибка в отчете за " + monthName[i - 1]);
+                if (monthExpenses != year.getAmount().get(yearIterator) && monthRevenue != year.getAmount().get(yearIterator + 1)) { //сверка, если расход 1
+                    System.out.println("Ошибка в отчете за " + monthName[i - 1]);
+                }
             }
 
         }

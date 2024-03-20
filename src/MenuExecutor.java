@@ -5,7 +5,8 @@ public class MenuExecutor {
     DataManager manager = new DataManager();
     Scanner scanner = new Scanner(System.in);
     public void executeMenu() {
-        checkMonthAndYear();
+        checkYear();
+        checkMonth();
         while (true) {
             printMenu();
             System.out.print("Введите цифру, чтобы продолжить: ");
@@ -21,7 +22,8 @@ public class MenuExecutor {
             } else if (command == 5) {
                 manager.infoYear();
             }else if (command == 6){
-                checkMonthAndYear();
+                checkYear();
+                checkMonth();
             } else if (command == 0) {
                 System.out.println("До свидания");
                 System.exit(0);
@@ -40,10 +42,20 @@ public class MenuExecutor {
                 "6. Изменить год отчета и/или кол-во месяцев\n" +
                 "0. Выход\n");
     }
-    private void checkMonthAndYear(){
+    private void checkYear(){
         System.out.println("Введите год ваших отчетов: ");
         manager.setYearName(scanner.nextInt());
+
+    }
+    private void checkMonth(){
         System.out.println("Введите количество месяцев, за которые готовы отчеты:");
-        manager.setMonthCount(scanner.nextInt());
+        int monthCount = (scanner.nextInt());
+        if (monthCount < 1 || monthCount > 12){
+            System.out.println("Месяцы должны быть от 1 до 12!");
+            checkMonth();
+        } else{
+            manager.setMonthCount(monthCount);
+        }
+
     }
 }

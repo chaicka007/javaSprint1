@@ -7,17 +7,19 @@ import java.nio.file.Path;
 public class FileReader {
 
 
-
     public String[] readAllMonthReports(int monthCount) {
         String[] monthReports = new String[monthCount];
         for (int i = 0; i < monthCount; i++) {
             monthReports[i] = readFile("m.20210" + (i + 1) + ".csv"); //Читаем файл и пишем его содержимое в массив
+            if (monthReports[i] == null){
+                throw new NullPointerException();
+            }
         }
         return monthReports;
     }
 
-    public String readYearReports() {
-        return readFile("y.2021.csv");
+    public String readYearReports(int year) {
+        return readFile("y." + year + ".csv");
     }
 
     private String readFile(String path) {
