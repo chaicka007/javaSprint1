@@ -3,15 +3,34 @@ import java.util.ArrayList;
 
 //Здесь разбивка файла
 public class DataManager {
-    String[] monthName = {"январь", "февраль", "март"};
-    FileReader reader = new FileReader();
-    MonthlyReport month = new MonthlyReport();
-    YearReport year = new YearReport();
+    private final String[] monthName = {"январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"};
+    private final FileReader reader = new FileReader();
+    private final MonthlyReport month = new MonthlyReport();
+    private final YearReport year = new YearReport();
+
+    private int monthCount;
+    private int yearName;
+
+    public int getMonthCount() {
+        return monthCount;
+    }
+
+    public void setMonthCount(int monthCount) {
+        this.monthCount = monthCount;
+    }
+
+    public int getYearName() {
+        return yearName;
+    }
+
+    public void setYearName(int yearName) {
+        this.yearName = yearName;
+    }
 
     public void parseMonth() {
 
-        String[] monthReport = reader.readAllMonthReports();
-        year.setYear(2021);
+        String[] monthReport = reader.readAllMonthReports(monthCount);
+        year.setYear(yearName);
 
         for (int i = 1; i <= 3; i++) {
             String[] lines = monthReport[i - 1].split("\\n");
@@ -19,13 +38,9 @@ public class DataManager {
             ArrayList<Boolean> is_expense = new ArrayList<>();
             ArrayList<Integer> quantity = new ArrayList<>();
             ArrayList<Double> sum_of_one = new ArrayList<>();
-            int j = 0; //нужна для пропуска первой итерации цикла
-            for (String line : lines) {
-                if (j == 0) {
-                    j++;
-                    continue;
-                }
-                String[] lineContents = line.split(",");
+
+            for (int j = 1; j < lines.length; j++) {
+                String[] lineContents = lines[j].split(",");
                 item_name.add(lineContents[0]);
                 is_expense.add(Boolean.valueOf(lineContents[1]));
                 quantity.add(Integer.valueOf(lineContents[2]));

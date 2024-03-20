@@ -5,11 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class FileReader {
-    String[] monthReports = new String[12];
 
 
-    public String[] readAllMonthReports() {
-        for (int i = 0; i <= 2; i++) {
+
+    public String[] readAllMonthReports(int monthCount) {
+        String[] monthReports = new String[monthCount];
+        for (int i = 0; i < monthCount; i++) {
             monthReports[i] = readFile("m.20210" + (i + 1) + ".csv"); //Читаем файл и пишем его содержимое в массив
         }
         return monthReports;
