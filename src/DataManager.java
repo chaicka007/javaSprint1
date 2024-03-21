@@ -29,22 +29,22 @@ public class DataManager {
             String[] monthReport = reader.readAllMonthReports(monthCount);
             for (int i = 1; i <= getMonthCount(); i++) {
                 String[] lines = monthReport[i - 1].split("\\n");
-                ArrayList<String> item_name = new ArrayList<>();
-                ArrayList<Boolean> is_expense = new ArrayList<>();
+                ArrayList<String> itemName = new ArrayList<>();
+                ArrayList<Boolean> isExpense = new ArrayList<>();
                 ArrayList<Integer> quantity = new ArrayList<>();
-                ArrayList<Double> sum_of_one = new ArrayList<>();
+                ArrayList<Double> sumOfOne = new ArrayList<>();
 
                 for (int j = 1; j < lines.length; j++) {
                     String[] lineContents = lines[j].split(",");
-                    item_name.add(lineContents[0]);
-                    is_expense.add(Boolean.valueOf(lineContents[1]));
+                    itemName.add(lineContents[0]);
+                    isExpense.add(Boolean.valueOf(lineContents[1]));
                     quantity.add(Integer.valueOf(lineContents[2]));
-                    sum_of_one.add(Double.valueOf(lineContents[3]));
+                    sumOfOne.add(Double.valueOf(lineContents[3]));
                 }
-                month.putItemName(i, item_name);
-                month.putIsExpense(i, is_expense);
+                month.putItemName(i, itemName);
+                month.putIsExpense(i, isExpense);
                 month.putQuantity(i, quantity);
-                month.putSumOfOne(i, sum_of_one);
+                month.putSumOfOne(i, sumOfOne);
             }
             month.setRead(true); // переменная, что отчет прочитан
             System.out.println("Успешное чтение месячных отчетов");
@@ -84,18 +84,18 @@ public class DataManager {
         System.out.print("Информация о месячных отчетах\n");
         for (int i = 1; i <= monthCount; i++) {
             System.out.println(monthName[i - 1] + ":");
-            ArrayList<Boolean> is_expenses = month.getIsExpense().get(i);
-            ArrayList<String> item_name = month.getItemName().get(i);
+            ArrayList<Boolean> isExpenses = month.getIsExpense().get(i);
+            ArrayList<String> itemName = month.getItemName().get(i);
             ArrayList<Integer> quantity = month.getQuantity().get(i);
-            ArrayList<Double> sum_of_one = month.getSumOfOne().get(i);
+            ArrayList<Double> sumOfOne = month.getSumOfOne().get(i);
 
             double maxRevenue = 0;
             int maxRevenueID = 0;
             double maxExpense = 0;
             int maxExpenseID = 0;
-            for (int j = 0; j < is_expenses.size(); j++) {
-                double finalValue = quantity.get(j) * sum_of_one.get(j);
-                if (!is_expenses.get(j)) { //проверяем что это не трата и ищем максимальную прибыль, а если трата то ищем максимальную трату
+            for (int j = 0; j < isExpenses.size(); j++) {
+                double finalValue = quantity.get(j) * sumOfOne.get(j);
+                if (!isExpenses.get(j)) { //проверяем что это не трата и ищем максимальную прибыль, а если трата то ищем максимальную трату
                     if (finalValue > maxRevenue) {
                         maxRevenue = finalValue;
                         maxRevenueID = j;
@@ -108,8 +108,8 @@ public class DataManager {
 
                 }
             }
-            System.out.println("Максимальная продажа: " + item_name.get(maxRevenueID) + " на сумму: " + maxRevenue);
-            System.out.println("Максимальная потеря деняг: " + item_name.get(maxExpenseID) + " на сумму: " + maxExpense);
+            System.out.println("Максимальная продажа: " + itemName.get(maxRevenueID) + " на сумму: " + maxRevenue);
+            System.out.println("Максимальная потеря деняг: " + itemName.get(maxExpenseID) + " на сумму: " + maxExpense);
         }
     }
 
@@ -162,16 +162,16 @@ public class DataManager {
         }
         System.out.println("Сверка отчетов:");
         for (int i = 1; i <= monthCount; i++) {
-            ArrayList<Boolean> is_expenses = month.getIsExpense().get(i);
+            ArrayList<Boolean> isExpenses = month.getIsExpense().get(i);
             ArrayList<Integer> quantity = month.getQuantity().get(i);
-            ArrayList<Double> sum_of_one = month.getSumOfOne().get(i);
+            ArrayList<Double> sumOfOne = month.getSumOfOne().get(i);
             double monthExpenses = 0;
             double monthRevenue = 0;
-            for (int j = 0; j < is_expenses.size(); j++) {
-                if (!is_expenses.get(j)) { //проверяем что это не трата и записываем в доход,
-                    monthRevenue += quantity.get(j) * sum_of_one.get(j);
+            for (int j = 0; j < isExpenses.size(); j++) {
+                if (!isExpenses.get(j)) { //проверяем что это не трата и записываем в доход,
+                    monthRevenue += quantity.get(j) * sumOfOne.get(j);
                 } else {
-                    monthExpenses += quantity.get(j) * sum_of_one.get(j);
+                    monthExpenses += quantity.get(j) * sumOfOne.get(j);
                 }
 
 
